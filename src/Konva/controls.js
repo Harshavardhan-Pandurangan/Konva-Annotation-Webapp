@@ -8,16 +8,19 @@ export default function Controls({
     deleleAnnotation,
 }) {
     if (localStorage.getItem("annotations") === null) {
-        localStorage.setItem("annotations", JSON.stringify([{ index: 0 }]));
+        localStorage.setItem("annotations", JSON.stringify([]));
     }
+
+    const [currentAnnotation, setCurrentAnnotation] = useState(annotation);
 
     const [annotations, setAnnotations] = useState(
         JSON.parse(localStorage.getItem("annotations"))
     );
 
     useEffect(() => {
+        setCurrentAnnotation(annotation);
         setAnnotations(JSON.parse(localStorage.getItem("annotations")));
-    }, [localStorage.getItem("annotations"), annotation_list]);
+    }, [annotation_list, annotation]);
 
     return (
         <div className="flex flex-col h-full mr-10">
@@ -39,11 +42,12 @@ export default function Controls({
                 {annotations.map((annotation_, index) => {
                     return (
                         <div
-                            key={index}
+                            key={annotation_.index}
                             className="flex flex-row w-full box-border border-4 p-2 border-gray-50 rounded-2xl mt-2"
                             style={{
                                 backgroundColor:
-                                    annotation.index === annotation_.index
+                                    currentAnnotation.index ===
+                                    annotation_.index
                                         ? "#FDE047"
                                         : "#FFFFFF",
                             }}
@@ -61,7 +65,9 @@ export default function Controls({
                             </button>
                             <button
                                 className="w-1/6 h-full bg-red-500 hover:bg-red-700 text-white font-mono py-2 px-4 rounded-full center ml-4 flex flex-row justify-center"
-                                onClick={() => deleleAnnotation(index)}
+                                onClick={() =>
+                                    deleleAnnotation(annotation_.index)
+                                }
                             >
                                 <img
                                     src="/images/delete.png"

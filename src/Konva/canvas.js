@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Stage, Layer, Image as KonvaImage } from "react-konva";
 import useImage from "use-image";
 
-export default function Canvas() {
+export default function Canvas({ annotation, updateAnnotation }) {
     // need a stage with 2 layers: one for the image, one for the annotations
     const [image] = useImage("/images/test1.jpg");
     const [imageWidth, setImageWidth] = useState(0);

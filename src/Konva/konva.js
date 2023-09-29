@@ -3,16 +3,44 @@ import Canvas from "./canvas";
 import Controls from "./controls";
 
 export default function Konva() {
+    if (localStorage.getItem("annotations") === null) {
+        localStorage.setItem("annotations", JSON.stringify([]));
+    }
+
     const [currentAnnotation, setCurrentAnnotation] = useState(
-        JSON.parse(localStorage.getItem("annotations"))[0]
+        JSON.parse(localStorage.getItem("annotations"))[0] || null
+    );
+    const [annotation_list, setAnnotation_list] = useState(
+        JSON.parse(localStorage.getItem("annotations"))
     );
 
     function createAnnotation() {
-        console.log("create annotation");
+        // find the least index that is not used
+        let index = 0;
+        while (
+            JSON.parse(localStorage.getItem("annotations")).filter(
+                (annotation) => annotation.index === index
+            ).length > 0
+        ) {
+            index++;
+        }
+        const annotation = {
+            index: index,
+        };
+
+        setCurrentAnnotation(annotation);
+        localStorage.setItem(
+            "annotations",
+            JSON.stringify(
+                JSON.parse(localStorage.getItem("annotations")).concat(
+                    annotation
+                )
+            )
+        );
+        setAnnotation_list(JSON.parse(localStorage.getItem("annotations")));
     }
 
     function editAnnotation(index) {
-        console.log("edit annotation ", index);
         setCurrentAnnotation(
             JSON.parse(localStorage.getItem("annotations")).filter(
                 (annotation) => annotation.index === index
@@ -23,12 +51,6 @@ export default function Konva() {
     function updateAnnotation(annotation) {}
 
     function deleleAnnotation(index) {
-        console.log("delete annotation ", index);
-        if (currentAnnotation.index === index) {
-            setCurrentAnnotation(
-                JSON.parse(localStorage.getItem("annotations"))[0]
-            );
-        }
         localStorage.setItem(
             "annotations",
             JSON.stringify(
@@ -37,6 +59,12 @@ export default function Konva() {
                 )
             )
         );
+        if (currentAnnotation.index === index) {
+            setCurrentAnnotation(
+                JSON.parse(localStorage.getItem("annotations"))[0]
+            );
+        }
+        setAnnotation_list(JSON.parse(localStorage.getItem("annotations")));
     }
 
     return (
@@ -55,9 +83,7 @@ export default function Konva() {
                 </div>
                 <div className="w-1/3 h-full">
                     <Controls
-                        annotation_list={JSON.parse(
-                            localStorage.getItem("annotations")
-                        )}
+                        annotation_list={annotation_list}
                         annotation={currentAnnotation}
                         createAnnotation={createAnnotation}
                         editAnnotation={editAnnotation}
