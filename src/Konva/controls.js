@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 
 export default function Controls({
+    annotation_list,
+    annotation,
     createAnnotation,
     editAnnotation,
     deleleAnnotation,
@@ -15,13 +17,7 @@ export default function Controls({
 
     useEffect(() => {
         setAnnotations(JSON.parse(localStorage.getItem("annotations")));
-    }, [localStorage.getItem("annotations")]);
-
-    function setAnnotation(index) {
-        return () => {
-            console.log(index);
-        };
-    }
+    }, [localStorage.getItem("annotations"), annotation_list]);
 
     return (
         <div className="flex flex-col h-full mr-10">
@@ -40,18 +36,26 @@ export default function Controls({
             </div>
             <div className="flex flex-col flex-grow h-4/7 overflow-auto mt-10">
                 {/* list of annotations by mapping */}
-                {annotations.map((annotation, index) => {
+                {annotations.map((annotation_, index) => {
                     return (
                         <div
                             key={index}
                             className="flex flex-row w-full box-border border-4 p-2 border-gray-50 rounded-2xl mt-2"
+                            style={{
+                                backgroundColor:
+                                    annotation.index === annotation_.index
+                                        ? "#FDE047"
+                                        : "#FFFFFF",
+                            }}
                         >
                             <div className="w-1/2 h-full text-center align-middle py-3">
-                                {"Annotation " + annotation.index}
+                                {"Annotation " + annotation_.index}
                             </div>
                             <button
                                 className="w-1/4 h-full bg-yellow-500 hover:bg-orange-700 text-white font-mono py-2 px-4 rounded-full center ml-4"
-                                onClick={() => editAnnotation(annotation.index)}
+                                onClick={() =>
+                                    editAnnotation(annotation_.index)
+                                }
                             >
                                 Edit
                             </button>

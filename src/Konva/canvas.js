@@ -51,6 +51,7 @@ export default function Canvas() {
                     scaleY={imageScale}
                 />
             </Layer>
+            <Layer>{/*  */}</Layer>
         </Stage>
     );
 }
