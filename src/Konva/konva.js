@@ -24,11 +24,22 @@ export default function Konva() {
         ) {
             index++;
         }
+
+        // new annotation at center of canvas of size 100x100
         const annotation = {
             index: index,
+            x: -1,
+            y: -1,
+            width: 100,
+            height: 100,
+            rotation: 0,
+            // translucent orange
+            fill: "rgba(255, 159, 64, 0.5)",
         };
 
         setCurrentAnnotation(annotation);
+
+        // setCurrentAnnotation(annotation);
         localStorage.setItem(
             "annotations",
             JSON.stringify(
@@ -48,7 +59,23 @@ export default function Konva() {
         );
     }
 
-    function updateAnnotation(annotation) {}
+    function updateAnnotation(annotation) {
+        localStorage.setItem(
+            "annotations",
+            JSON.stringify(
+                JSON.parse(localStorage.getItem("annotations")).map(
+                    (annotation_) => {
+                        if (annotation_.index === annotation.index) {
+                            return annotation;
+                        } else {
+                            return annotation_;
+                        }
+                    }
+                )
+            )
+        );
+        setAnnotation_list(JSON.parse(localStorage.getItem("annotations")));
+    }
 
     function deleleAnnotation(index) {
         localStorage.setItem(

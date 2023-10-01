@@ -82,3 +82,23 @@ export default function Controls({
         </div>
     );
 }
+
+// <Transformer
+//     ref={(node) => {
+//         if (node) {
+//             node.getLayer().batchDraw();
+//         }
+//     }}
+//     rotateEnabled={true}
+//     keepRatio={true}
+//     enabledAnchors={[
+//         "top-left",
+//         "top-right",
+//         "bottom-left",
+//         "bottom-right",
+//         "middle-left",
+//         "middle-right",
+//         "top-center",
+//         "bottom-center",
+//     ]}
+// />
