@@ -56,14 +56,16 @@ export default function Canvas({ annotation, updateAnnotation }) {
         setCurrentAnnotation(annotation);
     }, [annotation]);
 
-    function updateCurrentAnnotation(annotation) {
-        annotation.index = currentAnnotation.index;
-        annotation.fill = currentAnnotation.fill;
-        annotation.width = Math.max(5, annotation.width);
-        annotation.height = Math.max(5, annotation.height);
+    function updateCurrentAnnotation1(annotation) {
         annotation.x = Math.max(0, annotation.x);
         annotation.y = Math.max(0, annotation.y);
-        annotation.rotation = annotation.rotation % 360;
+
+        setCurrentAnnotation(annotation);
+        updateAnnotation(annotation);
+    }
+
+    function updateCurrentAnnotation2(annotation) {
+        annotation.rotation = (annotation.rotation + 360) % 360;
 
         setCurrentAnnotation(annotation);
         updateAnnotation(annotation);
@@ -110,30 +112,12 @@ export default function Canvas({ annotation, updateAnnotation }) {
                             rotateEnabled={true}
                             draggable
                             onDragEnd={(e) => {
-                                updateCurrentAnnotation({
+                                updateCurrentAnnotation1({
                                     ...currentAnnotation,
                                     x: e.target.x(),
                                     y: e.target.y(),
-                                    rotation: e.target.rotation(),
                                 });
                             }}
-                            onTransformEnd={(e) => {
-                                const node = e.target;
-                                const scaleX = node.scaleX();
-                                const scaleY = node.scaleY();
-
-                                // we will reset it back
-                                node.scaleX(1);
-                                node.scaleY(1);
-                                updateCurrentAnnotation({
-                                    ...currentAnnotation,
-                                    x: node.x(),
-                                    y: node.y(),
-                                    width: Math.max(5, node.width() * scaleX),
-                                    height: Math.max(node.height() * scaleY),
-                                });
-                            }}
-                            // rotationSnaps={[0, 90, 180, 270]}
                         />
 
                         <Transformer
@@ -151,6 +135,24 @@ export default function Canvas({ annotation, updateAnnotation }) {
                                 "bottom-center",
                             ]}
                             rotateAnchorOffset={50}
+                            // when rotated, update the annotation
+                            onTransformEnd={(e) => {
+                                const node = e.target;
+                                const scaleX = node.scaleX();
+                                const scaleY = node.scaleY();
+
+                                // we will reset it back
+                                node.scaleX(1);
+                                node.scaleY(1);
+                                updateCurrentAnnotation2({
+                                    ...currentAnnotation,
+                                    x: node.x(),
+                                    y: node.y(),
+                                    width: Math.max(5, node.width() * scaleX),
+                                    height: Math.max(5, node.height() * scaleY),
+                                    rotation: node.rotation(),
+                                });
+                            }}
                         />
                     </>
                 )}
